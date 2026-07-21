@@ -82,7 +82,7 @@ const Header: React.FC<HeaderProps> = ({ pageTitle }) => {
     try {
       // Add timeout to prevent hanging
       const controller = new AbortController();
-      const timeoutId = setTimeout(() => controller.abort(), 10000); // 10 second timeout
+      const timeoutId = setTimeout(() => controller.abort(), 60000); // 10 second timeout
 
       const response = await fetch('https://cemilac-project-backend.onrender.com/iso/api/v1/connectionStatus', {
         method: 'GET',
@@ -172,7 +172,7 @@ const Header: React.FC<HeaderProps> = ({ pageTitle }) => {
         // Quick check to see if the endpoint exists
         const response = await fetch('https://cemilac-project-backend.onrender.com/iso/api/v1/connectionStatus', {
           method: 'HEAD', // Just check if endpoint exists
-          signal: AbortSignal.timeout(100000)
+          signal: AbortSignal.timeout(60000)
         });
         
         if (response.status === 404) {
