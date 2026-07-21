@@ -172,7 +172,7 @@ const Header: React.FC<HeaderProps> = ({ pageTitle }) => {
         // Quick check to see if the endpoint exists
         const response = await fetch('https://cemilac-project-backend.onrender.com/iso/api/v1/connectionStatus', {
           method: 'HEAD', // Just check if endpoint exists
-          signal: AbortSignal.timeout(10000)
+          signal: AbortSignal.timeout(100000)
         });
         
         if (response.status === 404) {
