@@ -1,0 +1,7 @@
+Sr.No,Title/Subject,Description,Details,Release Date,Category
+1,IMTAR-21 Revision Patch,New safety checking algorithms have been deployed to the UAT cluster.,Please review any applicability matrices flagged with a 'Re-Upload' status.,26-05-2026,Urgent
+2,Scheduled ISO Node Sync,Portal database sync operations are scheduled for Saturday from 22:00 to 02:00 IST.,Minor connection timeouts may occur on secure file links during this window.,24-05-2026,System
+3,Digital Signature Standards,E-Certification copies require verified hardware encryption tokens to generate.,"Applies to Green, Orange, or Red airworthiness wrappers; ensure tokens are registered before use.",19-05-2026,Policy
+4,Portal Maintenance Window,Routine server maintenance has been planned for the DA-ISO portal.,Users may experience intermittent access between 01:00 and 04:00 IST; save all drafts beforehand.,15-05-2026,System
+5,Upload Module Guidelines Update,Revised guidelines for document upload workflows have been published.,All project leads must acknowledge the updated checklist before submitting new iterations.,10-05-2026,Policy
+6,Critical Security Advisory,A vulnerability affecting older client certificates has been identified.,Users must renew their certificates immediately to avoid loss of secure access.,05-05-2026,Urgent
