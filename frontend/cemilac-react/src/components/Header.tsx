@@ -24,7 +24,7 @@ const Header: React.FC<HeaderProps> = ({ pageTitle }) => {
   // Get page title based on route
   const getPageTitle = (): string => {
     if (pageTitle) return pageTitle;
-    
+
     const routeTitles: { [key: string]: string } = {
       '/dashboard': 'Design Agency Dashboard',
       '/qa-dashboard': 'QA Dashboard',
@@ -47,22 +47,22 @@ const Header: React.FC<HeaderProps> = ({ pageTitle }) => {
   useEffect(() => {
     const updateDateTime = () => {
       const now = new Date();
-      
+
       // Format Date (Indian format)
-      const options: Intl.DateTimeFormatOptions = { 
-        year: 'numeric', 
-        month: 'short', 
-        day: 'numeric' 
+      const options: Intl.DateTimeFormatOptions = {
+        year: 'numeric',
+        month: 'short',
+        day: 'numeric'
       };
       setCurrentDate(now.toLocaleDateString('en-IN', options));
-      
+
       // Format Time (24-hour format)
       setCurrentTime(now.toLocaleTimeString('en-IN', { hour12: false }));
     };
 
     // Initial call
     updateDateTime();
-    
+
     // Set interval to update every second
     const interval = setInterval(updateDateTime, 1000);
 
@@ -74,15 +74,15 @@ const Header: React.FC<HeaderProps> = ({ pageTitle }) => {
     // Check semaphore to prevent concurrent calls
     const currentSemaphore = sessionStorage.getItem('SEMAPHORE');
     if (currentSemaphore === '1') return;
-    
+
     // Set semaphore
     sessionStorage.setItem('SEMAPHORE', '1');
     setConnectionStatus({ status: 'loading' });
 
     try {
-      // Add timeout to prevent hanging
+      // Add timeout to prevent hanging - increased to 60s to allow for Render free-tier cold starts
       const controller = new AbortController();
-      const timeoutId = setTimeout(() => controller.abort(), 60000); // 10 second timeout
+      const timeoutId = setTimeout(() => controller.abort(), 60000); // 60 second timeout
 
       const response = await fetch('https://cemilac-project-backend.onrender.com/iso/api/v1/connectionStatus', {
         method: 'GET',
@@ -101,7 +101,7 @@ const Header: React.FC<HeaderProps> = ({ pageTitle }) => {
 
       const result = await response.text();
       console.log('Connection status response:', result); // Debug log
-      
+
       // Reset semaphore
       sessionStorage.setItem('SEMAPHORE', '0');
 
@@ -112,34 +112,34 @@ const Header: React.FC<HeaderProps> = ({ pageTitle }) => {
         setShowPopup(false);
       } else if (result === "socket fail") {
         sessionStorage.setItem('conchk', '402');
-        setConnectionStatus({ 
-          status: 'disconnected', 
-          errorCode: 402, 
-          errorMessage: "Error 402 : Unable to create socket" 
+        setConnectionStatus({
+          status: 'disconnected',
+          errorCode: 402,
+          errorMessage: "Error 402 : Unable to create socket"
         });
         setShowPopup(true);
       } else if (result === "bind fail") {
         sessionStorage.setItem('conchk', '403');
-        setConnectionStatus({ 
-          status: 'disconnected', 
-          errorCode: 403, 
-          errorMessage: "Error 403 : Bind failed" 
+        setConnectionStatus({
+          status: 'disconnected',
+          errorCode: 403,
+          errorMessage: "Error 403 : Bind failed"
         });
         setShowPopup(true);
       } else if (result === "not reach") {
         sessionStorage.setItem('conchk', '412');
-        setConnectionStatus({ 
-          status: 'disconnected', 
-          errorCode: 412, 
-          errorMessage: "Error 412 : Server not reachable" 
+        setConnectionStatus({
+          status: 'disconnected',
+          errorCode: 412,
+          errorMessage: "Error 412 : Server not reachable"
         });
         setShowPopup(true);
       } else if (result === "Dongle error") {
         sessionStorage.setItem('conchk', '417');
-        setConnectionStatus({ 
-          status: 'disconnected', 
-          errorCode: 417, 
-          errorMessage: "Error 417 : Dongle error" 
+        setConnectionStatus({
+          status: 'disconnected',
+          errorCode: 417,
+          errorMessage: "Error 417 : Dongle error"
         });
         setShowPopup(true);
       } else {
@@ -154,7 +154,7 @@ const Header: React.FC<HeaderProps> = ({ pageTitle }) => {
       console.error('Connection status check failed:', error);
       sessionStorage.setItem('conchk', '1');
       sessionStorage.setItem('SEMAPHORE', '0');
-      
+
       // Set to disconnected instead of staying in loading state
       setConnectionStatus({ status: 'disconnected' });
       setShowPopup(false);
@@ -165,49 +165,21 @@ const Header: React.FC<HeaderProps> = ({ pageTitle }) => {
   useEffect(() => {
     // Initialize semaphore
     sessionStorage.setItem('SEMAPHORE', '0');
-    
-    // Check if API endpoint exists, if not, show as disconnected
-    const checkApiAvailability = async () => {
-      try {
-        // Quick check to see if the endpoint exists
-        const response = await fetch('https://cemilac-project-backend.onrender.com/iso/api/v1/connectionStatus', {
-          method: 'HEAD', // Just check if endpoint exists
-          signal: AbortSignal.timeout(60000)
-        });
-        
-        if (response.status === 404) {
-          // API doesn't exist, show as disconnected
-          console.warn('API endpoint not available, showing as disconnected');
-          setConnectionStatus({ status: 'disconnected' });
-          return false;
-        }
-        return true;
-      } catch (error) {
-        console.warn('API endpoint check failed, proceeding with normal flow');
-        return true; // Proceed normally if check fails
-      }
-    };
 
-    const initializeStatus = async () => {
-      const apiExists = await checkApiAvailability();
-      if (apiExists) {
-        // Initial status check
+    // Initial status check - getStatus() already handles its own errors/timeouts,
+    // so no separate pre-flight availability check is needed
+    getStatus();
+
+    // Set interval to check status every 10 seconds
+    const statusInterval = setInterval(() => {
+      // Only run if semaphore is clear
+      const currentSemaphore = sessionStorage.getItem('SEMAPHORE');
+      if (currentSemaphore === '0') {
         getStatus();
-        
-        // Set interval to check status every 60 seconds (same as JSP)
-        const statusInterval = setInterval(() => {
-          // Only run if semaphore is clear
-          const currentSemaphore = sessionStorage.getItem('SEMAPHORE');
-          if (currentSemaphore === '0') {
-            getStatus();
-          }
-        }, 10000);
-
-        return () => clearInterval(statusInterval);
       }
-    };
+    }, 10000);
 
-    initializeStatus();
+    return () => clearInterval(statusInterval);
   }, []);
 
   // Fallback: if stuck in loading for too long, switch to disconnected
@@ -217,7 +189,7 @@ const Header: React.FC<HeaderProps> = ({ pageTitle }) => {
         console.warn('Connection check took too long, falling back to disconnected');
         sessionStorage.setItem('SEMAPHORE', '0');
         setConnectionStatus({ status: 'disconnected' });
-      }, 10000); // 15 second fallback
+      }, 65000); // fallback slightly longer than fetch timeouts, to allow for Render cold starts
 
       return () => clearTimeout(fallbackTimer);
     }
@@ -251,13 +223,13 @@ const Header: React.FC<HeaderProps> = ({ pageTitle }) => {
     <>
       <nav className="navbar-custom shadow-sm">
         <div className="container-fluid d-flex align-items-center justify-content-between">
-          
+
           {/* Left Side: Company Logo */}
           <div className="d-flex align-items-center" style={{ minWidth: '100px' }}>
-            <img 
+            <img
               src={`${process.env.PUBLIC_URL}/assets/img/logo.png`}
-              alt="CEMILAC Logo" 
-              className="img-fluid" 
+              alt="CEMILAC Logo"
+              className="img-fluid"
               style={{
                 maxHeight: '75px',
                 maxWidth: '100%',
@@ -267,7 +239,7 @@ const Header: React.FC<HeaderProps> = ({ pageTitle }) => {
               onError={(e) => {
                 const target = e.target as HTMLImageElement;
                 console.log('First logo failed, trying alternate:', target.src);
-                
+
                 // Try alternate logo path
                 if (target.src.includes('cemilac_logo.png')) {
                   target.src = `${process.env.PUBLIC_URL}/assets/img/logo.png`;
@@ -309,9 +281,9 @@ const Header: React.FC<HeaderProps> = ({ pageTitle }) => {
                 {/* Loading Spinner */}
                 {connectionStatus.status === 'loading' && (
                   <div className="d-flex align-items-center">
-                    <div 
-                      className="spinner-border spinner-border-sm me-2" 
-                      role="status" 
+                    <div
+                      className="spinner-border spinner-border-sm me-2"
+                      role="status"
                       style={{ width: '12px', height: '12px', cursor: 'pointer' }}
                       onClick={() => {
                         console.log('Manual stop of connection check');
@@ -325,7 +297,7 @@ const Header: React.FC<HeaderProps> = ({ pageTitle }) => {
                     <span className="text-warning">Checking...</span>
                   </div>
                 )}
-                
+
                 {/* Connected Status */}
                 {connectionStatus.status === 'connected' && (
                   <>
@@ -350,22 +322,22 @@ const Header: React.FC<HeaderProps> = ({ pageTitle }) => {
 
       {/* Error Popup (from JSP) */}
       {showPopup && connectionStatus.errorMessage && (
-        <div className="position-fixed top-0 start-0 w-100 h-100 d-flex align-items-center justify-content-center" 
+        <div className="position-fixed top-0 start-0 w-100 h-100 d-flex align-items-center justify-content-center"
              style={{ backgroundColor: 'rgba(0,0,0,0.5)', zIndex: 9999 }}>
           <div className="bg-white rounded-4 shadow-lg p-4 text-center" style={{ minWidth: '350px', maxWidth: '500px' }}>
             <div className="mb-3">
-              <div style={{ 
-                width: '50px', 
-                height: '50px', 
-                backgroundColor: '#d32f2f', 
-                borderRadius: '50%', 
-                display: 'flex', 
-                alignItems: 'center', 
-                justifyContent: 'center', 
-                margin: '0 auto 15px', 
-                color: 'white', 
-                fontSize: '24px', 
-                fontWeight: 'bold' 
+              <div style={{
+                width: '50px',
+                height: '50px',
+                backgroundColor: '#d32f2f',
+                borderRadius: '50%',
+                display: 'flex',
+                alignItems: 'center',
+                justifyContent: 'center',
+                margin: '0 auto 15px',
+                color: 'white',
+                fontSize: '24px',
+                fontWeight: 'bold'
               }}>
                 ✕
               </div>
@@ -373,8 +345,8 @@ const Header: React.FC<HeaderProps> = ({ pageTitle }) => {
             <h2 className="mb-2 fw-bold text-danger">Connection Failure!</h2>
             <hr className="mx-3" />
             <p className="text-dark mb-3">{connectionStatus.errorMessage}</p>
-            <button 
-              type="button" 
+            <button
+              type="button"
               className="btn btn-primary px-4 py-2 fw-semibold rounded-3"
               onClick={hidePopup}
               style={{ backgroundColor: 'var(--drdo-blue)', borderColor: 'var(--drdo-blue)' }}
