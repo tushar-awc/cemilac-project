@@ -86,7 +86,7 @@ const Login: React.FC = () => {
   const { user, login } = useAuth();
   const navigate = useNavigate();
   
-  const BASE_URL = 'https://cemilac-project-backend.onrender.com/iso/v1/';
+  const BASE_URL = 'https://cemilac-project-backend.onrender.com/iso/api/v1/';
 
   // Initialize page - equivalent to JSP onload="initializePage()"
   useEffect(() => {
