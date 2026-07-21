@@ -39,13 +39,14 @@ import ch.qos.logback.core.filter.Filter;
 @EnableWebSecurity
 public class SecurityConfig extends WebSecurityConfigurerAdapter {
 
-	
     @Value("${trusted.domains}")
     private List<String> trustedDomains;
+
     @PostConstruct
     public void init() {
         System.out.println("Domains name = " + trustedDomains);
     }
+
     /*
      * @Bean public HttpFirewall configureFirewall() { StrictHttpFirewall strictHttpFirewall = new StrictHttpFirewall();
      * strictHttpFirewall.setAllowedHttpMethods(Arrays.asList("GET", "POST", "DELETE")); return strictHttpFirewall; }

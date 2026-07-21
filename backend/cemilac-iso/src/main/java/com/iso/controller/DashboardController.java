@@ -76,7 +76,7 @@ import org.apache.poi.ss.usermodel.Sheet;
 @RequestMapping({ "api/v1/" })
 @WebListener
 @CrossOrigin(origins = "http://localhost:3000")
-//@Slf4j
+// @Slf4j
 public class DashboardController implements HttpSessionListener {
 
     @Value("${download.location}")
@@ -1137,7 +1137,8 @@ public class DashboardController implements HttpSessionListener {
                             this.logger.info("--------> file name contains invalid characters");
                             return "invalid";
                         }
-                        String helper = currentDirFile.getAbsolutePath();                        String parentFolder = helper.substring(0, helper.length() - 1);
+                        String helper = currentDirFile.getAbsolutePath();
+                        String parentFolder = helper.substring(0, helper.length() - 1);
 
                         String filePath = "/" + parentFolder + "/" + "temp/" + DA_ID + "/" + projectID + "/"
                                 + documentName + "/";
@@ -1745,29 +1746,28 @@ public class DashboardController implements HttpSessionListener {
         return strStatus;
 
     }
-    
-    
+
     @GetMapping("dpdClient")
     public int dpdClient() throws Exception, IOException {
-		this.logger.info("Testing The Native Interface Connection");
-		int iStatus = -1;
-		try {
-			this.logger.info("Calling the CAIR dpdClient Function to Check the Connection");
-			NativeInterfaceConfig config = new NativeInterfaceConfig();
-			NativeInterface nativeInterface = config.getNativeInterface();
-			iStatus = nativeInterface.dpdClient();
+        this.logger.info("Testing The Native Interface Connection");
+        int iStatus = -1;
+        try {
+            this.logger.info("Calling the CAIR dpdClient Function to Check the Connection");
+            NativeInterfaceConfig config = new NativeInterfaceConfig();
+            NativeInterface nativeInterface = config.getNativeInterface();
+            iStatus = nativeInterface.dpdClient();
 
-			this.logger.info("The Status for After Calling the Native Interface is :" + iStatus);
+            this.logger.info("The Status for After Calling the Native Interface is :" + iStatus);
 
-		} catch (Exception ex) {
-			ex.printStackTrace();
+        } catch (Exception ex) {
+            ex.printStackTrace();
 
-			this.logger.error("Connection function--------->Error:------->" + ex);
-		}
-		this.logger.info("Check connectio function ends");
-		return iStatus;
+            this.logger.error("Connection function--------->Error:------->" + ex);
+        }
+        this.logger.info("Check connectio function ends");
+        return iStatus;
 
-	}
+    }
 
     @GetMapping("connectionStatus") // for connection status
     public String connectionStatus() throws Exception, IOException {
@@ -2202,7 +2202,8 @@ public class DashboardController implements HttpSessionListener {
 
     // login check
     @GetMapping({ "login" })
-    public String login(@RequestParam String token, HttpServletRequest request, HttpServletResponse response) throws Exception {
+    public String login(@RequestParam String token, HttpServletRequest request, HttpServletResponse response)
+            throws Exception {
 
         System.err.println("function called");
         request.getSession().setAttribute("token", token);
