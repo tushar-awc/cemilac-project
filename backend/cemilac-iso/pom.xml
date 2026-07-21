@@ -18,6 +18,7 @@
 	<properties>
 		<java.version>11</java.version>
 		<formatter-maven-plugin.version>2.18.0</formatter-maven-plugin.version>
+		<project.dir>${project.basedir}</project.dir>
 	</properties>
 	
 	<repositories>
@@ -127,6 +128,13 @@
   <version>1.18.20.0</version>
   <type>maven-plugin</type>
 </dependency>
+             <dependency>
+    <groupId>nativeiso</groupId>
+    <artifactId>nativeiso</artifactId>
+    <version>1.0</version>
+    <scope>system</scope>
+    <systemPath>${project.basedir}/src/main/webapp/WEB-INF/lib/nativeiso.jar</systemPath>
+</dependency>
 		<dependency>
 			<groupId>org.springframework.boot</groupId>
 			<artifactId>spring-boot-starter-web</artifactId>
@@ -169,14 +177,9 @@
 			<optional>true</optional>
 		</dependency>
 		
+			
 		
-	<dependency>
-     		<groupId>nativeiso</groupId>
-     		<artifactId>nativeiso</artifactId>
-     		<scope>system</scope>
-     		<version>1.0</version>
-     		<systemPath>/home/cemilac/Downloads/cemilac-iso7may/cemilac-iso/bin/src/main/webapp/WEB-INF/libs/nativeiso.jar</systemPath>
-     	</dependency>
+	
 	</dependencies>
 
 
