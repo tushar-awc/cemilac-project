@@ -75,7 +75,7 @@ import org.apache.poi.ss.usermodel.Sheet;
 @RestController
 @RequestMapping({ "api/v1/" })
 @WebListener
-@CrossOrigin(origins = "http://localhost:3000")
+@CrossOrigin(origins = "https://cemilac-project-frontend.onrender.com")
 // @Slf4j
 public class DashboardController implements HttpSessionListener {
 
@@ -1747,38 +1747,18 @@ public class DashboardController implements HttpSessionListener {
 
     }
 
-    @GetMapping("dpdClient")
-    public int dpdClient() throws Exception, IOException {
-        this.logger.info("Testing The Native Interface Connection");
-        int iStatus = -1;
-        try {
-            this.logger.info("Calling the CAIR dpdClient Function to Check the Connection");
-            NativeInterfaceConfig config = new NativeInterfaceConfig();
-            NativeInterface nativeInterface = config.getNativeInterface();
-            iStatus = nativeInterface.dpdClient();
-
-            this.logger.info("The Status for After Calling the Native Interface is :" + iStatus);
-
-        } catch (Exception ex) {
-            ex.printStackTrace();
-
-            this.logger.error("Connection function--------->Error:------->" + ex);
-        }
-        this.logger.info("Check connectio function ends");
-        return iStatus;
-
-    }
-
     @GetMapping("connectionStatus") // for connection status
     public String connectionStatus() throws Exception, IOException {
         this.logger.info("-------->Starting process to check connection status");
         String status = "success";
         try {
             this.logger.info("-------->CAIR dpdcli() function called to check connection");
-            NativeInterfaceConfig config = new NativeInterfaceConfig();
-            NativeInterface nativeInterface = config.getNativeInterface();
-            int iStatus = nativeInterface.dpdClient();
+//            NativeInterfaceConfig config = new NativeInterfaceConfig();
+//            NativeInterface nativeInterface = config.getNativeInterface();
+//            int iStatus = nativeInterface.dpdClient();
 
+            //for mocking purpose
+            int iStatus=0;
             this.logger.info("-------->Check connection function called with status: " + iStatus);
 
             if (iStatus == 0) {
