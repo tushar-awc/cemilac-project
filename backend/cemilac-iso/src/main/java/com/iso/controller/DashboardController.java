@@ -1753,12 +1753,12 @@ public class DashboardController implements HttpSessionListener {
         String status = "success";
         try {
             this.logger.info("-------->CAIR dpdcli() function called to check connection");
-//            NativeInterfaceConfig config = new NativeInterfaceConfig();
-//            NativeInterface nativeInterface = config.getNativeInterface();
-//            int iStatus = nativeInterface.dpdClient();
+            // NativeInterfaceConfig config = new NativeInterfaceConfig();
+            // NativeInterface nativeInterface = config.getNativeInterface();
+            // int iStatus = nativeInterface.dpdClient();
 
-            //for mocking purpose
-            int iStatus=0;
+            // for mocking purpose
+            int iStatus = 0;
             this.logger.info("-------->Check connection function called with status: " + iStatus);
 
             if (iStatus == 0) {
