@@ -84,7 +84,7 @@ const Header: React.FC<HeaderProps> = ({ pageTitle }) => {
       const controller = new AbortController();
       const timeoutId = setTimeout(() => controller.abort(), 10000); // 10 second timeout
 
-      const response = await fetch('https://cemilac-project-backend.onrender.com/api/v1/connectionStatus', {
+      const response = await fetch('https://cemilac-project-backend.onrender.com/iso/api/v1/connectionStatus', {
         method: 'GET',
         headers: {
           'Content-Type': 'application/json; charset=UTF-8',
